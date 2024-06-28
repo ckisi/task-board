@@ -29,11 +29,11 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Task</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form id="task-form">
           <div class="mb-3">
             <label for="task-title" class="col-form-label">Task Title</label>
             <input type="text" class="form-control" id="task-title">
@@ -49,7 +49,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Send message</button>
+        <button type="submit" class="btn btn-success" id="submitTask">Add task</button>
       </div>
     </div>
   </div>
