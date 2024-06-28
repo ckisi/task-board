@@ -14,7 +14,7 @@ function readTasksFromStorage() {
     return tasks;
 }
 
-// Todo: create a function to generate a unique task id
+// Generates a unique task id
 function generateTaskId() {
     card.crypto = randomUUID();
 }
@@ -28,10 +28,10 @@ function createTaskCard(task) {
     const taskDescription = $('<p>').addClass('card-text').text(task.description);
     const taskDueDate = $('<p>').addClass('card-text').text(task.dueDate);
     const taskDeleteBtn = $('<button>')
-    .addClass()
-    .text()
-    .attr()
-    //Add event listener for delete task function taskDeleteBtn.on('click', handleDeleteTask);
+    .addClass('btn btn-danger delete')
+    .text('Delete')
+    .attr('data-task-id', task.id);
+    taskDeleteBtn.on('click', handleDeleteTask);
 }
 
 // Todo: create a function to render the task list and make cards draggable
@@ -41,7 +41,11 @@ function renderTaskList() {
 
 // Todo: create a function to handle adding a new task
 function handleAddTask(event){
+    event.preventDefault();
 
+    // const taskName
+    // const taskDescription
+    // const taskDueDate
 }
 
 // Todo: create a function to handle deleting a task
@@ -56,5 +60,8 @@ function handleDrop(event, ui) {
 
 // Todo: when the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
 $(document).ready(function () {
-
+    $('#task-duedate').datepicker({
+        changeMonth: true,
+        changeYear: true,
+    });
 });
