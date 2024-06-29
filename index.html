@@ -25,35 +25,35 @@
       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#formModal">Add Task</button>
     </div>
     <!-- Modal with a form to add tasks -->
-  <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModal" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Task</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="task-form">
-          <div class="mb-3">
-            <label for="task-title" class="col-form-label">Task Title</label>
-            <input type="text" class="form-control" id="task-title">
+    <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add Task</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div>
-            <label for="task-duedate" class="col-form-label">Task Due Date</label>
-            <input type="text" class="form-control" id="task-duedate">
+          <div class="modal-body">
+            <form id="task-form">
+            <div class="mb-3">
+              <label for="task-title" class="col-form-label">Task Title</label>
+              <input type="text" class="form-control" id="task-title">
+            </div>
+            <div>
+              <label for="task-duedate" class="col-form-label">Task Due Date</label>
+              <input type="text" class="form-control" id="task-duedate">
+            </div>
+            <div class="mb-3">
+              <label for="task-description" class="col-form-label">Task Description</label>
+              <textarea class="form-control" id="task-description"></textarea>
+            </div>
+            </form>
           </div>
-          <div class="mb-3">
-            <label for="task-description" class="col-form-label">Task Description</label>
-            <textarea class="form-control" id="task-description"></textarea>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success" id="submitTask">Add task</button>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-success" id="submitTask">Add task</button>
+        </div>
       </div>
     </div>
-  </div>
-  </div>
     <div class="row swim-lanes text-center justify-content-between">
       <div class="col-12 col-lg-4 d-flex">
         <div id="to-do" class="card border-light mb-3 lane flex-grow-1">
@@ -74,16 +74,16 @@
             <div id="in-progress-cards"></div>
           </div>
         </div>
+      </div>
+      <div class="col-12 col-lg-4 d-flex">
+        <div id="done" class="card border-light mb-3 lane flex-grow-1">
+          <div class="card-header bg-white">
+            <h2 class="card-title mb-1">Done</h2>
+          </div>
+          <div class="card-body bg-light">
+            <div id="done-cards"></div>
+          </div>
         </div>
-        <div class="col-12 col-lg-4 d-flex">
-          <div id="done" class="card border-light mb-3 lane flex-grow-1">
-            <div class="card-header bg-white">
-              <h2 class="card-title mb-1">Done</h2>
-            </div>
-            <div class="card-body bg-light">
-              <div id="done-cards"></div>
-          </div>
-          </div>
       </div>
     </div>
   </div>
