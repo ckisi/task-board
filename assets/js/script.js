@@ -7,10 +7,6 @@ const taskForm = $('#task-form');
 let taskList = JSON.parse(localStorage.getItem("tasks"));
 let nextId = JSON.parse(localStorage.getItem("nextId"));
 
-function saveTasksToStorage(tasks) {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-}
-
 // Gets the tasks array from local storage
 function readTasksFromStorage() {
 
@@ -30,7 +26,19 @@ function readTasksFromStorage() {
 function createTaskCard(task) {
     const taskCard = $('<div>')
         .addClass('card text-dark draggable mb-3')
-        .attr('data-task-id', task.id);
+        .attr('data-task-id', task.id)
+        .draggable({  // Making the cards draggable here instead
+            opacity: 0.9,
+            zIndex: 100,
+            helper: function (e) {
+                const original = $(e.target).hasClass('ui-draggable')
+                    ? $(e.target)
+                    : $(e.target).closest('.ui-draggable');
+                return original.clone().css({
+                    width: original.outerWidth(),
+            });
+            }
+        });
     const cardHeader = $('<h4>').addClass('card-header h4').text(task.title);
     const cardBody = $('<div>').addClass('card-body');
     const cardDescription = $('<p>').addClass('card-text').text(task.description);
@@ -59,7 +67,7 @@ function createTaskCard(task) {
 
 // Renders tasks by clearing the columns and loops through all the tasks and places them in their respective column
 function renderTaskList(tasks) {
-    tasks = readTasksFromStorage();
+    // tasks = readTasksFromStorage();
     
     // Empty out columns
     const todo = $('#todo-cards');
@@ -81,33 +89,22 @@ function renderTaskList(tasks) {
     }
     } else {
         console.error('tasks is not an array')
-    }
-
-    // Makes cards draggable
-    $('.draggable').draggable({
-        opacity: 0.9,
-        zIndex: 100,
-        helper: function (e) {
-          // Makes sure that the whole card is being dragged irrespective of where it is clicked
-          const original = $(e.target).hasClass('ui-draggable')
-            ? $(e.target)
-            : $(e.target).closest('.ui-draggable');
-          return original.clone().css({
-            width: original.outerWidth(),
-          });
-        }, 
-      });    
+    }  
 }
 
 // Adds a new task
 function handleAddTask(event){
     event.preventDefault();
-
+    
     // Trims inputs and gets values
     const taskTitle = taskTitleInput.val().trim();
     const taskDueDate = taskDateInput.val();
     const taskDescription = taskDescInput.val().trim();
 
+    // Checks if all three fields are filled
+    if (!taskTitle || !taskDueDate || !taskDescription) {
+        window.alert('Please fill all three fields');
+    } else {
     // Creates new object
     const newTask = {
         id: crypto.randomUUID(),
@@ -116,46 +113,46 @@ function handleAddTask(event){
         description: taskDescription,
         status: 'to-do',
     }
-
-   /* IGNORE ==============
-   let tasks = [];
-    const tasksFromStorage = localStorage.getItem('tasks');
-    if (tasksFromStorage) {
-        try {
-            tasks = JSON.parse(tasksFromStorage);
-        } catch (error) {
-            console.error('Error parsing tasks from localStorage:', error);
-            tasks = []; // Fallback to empty array
-        }
-    } ====================== */
-    tasks = readTasksFromStorage();
+    let tasks = readTasksFromStorage();
     
+    console.log('tasks before adding:', tasks);
     // Adds new task to tasks array
     tasks.push(newTask);
+    console.log('tasks after adding:', tasks);
     // Sets the array to local storage
     localStorage.setItem('tasks', JSON.stringify(tasks));
     // Hides the modal
     $('#formModal').modal('hide');    
-    // Renders the cards from task list
-    renderTaskList(tasks);
-
     // Clear input fields
     taskTitleInput.val('');
     taskDateInput.val('');
     taskDescInput.val('');
+
+    const todo = $('#todo-cards');
+    todo.empty();
+    const inProgress = $('#in-progress-cards');
+    inProgress.empty();
+    const done = $('#done-cards');
+    done.empty();
+    tasks = readTasksFromStorage();
+    // Renders the cards from task list
+    renderTaskList(tasks);
+    // TEMPORARY FIX
+    // location.reload();
+}
 }
 
 // Deletes task cards
 function handleDeleteTask(event){
+    event.preventDefault();
     const taskId = $(this).attr('data-task-id');
-    const tasks = readTasksFromStorage();
-    tasks.forEach((task) => {
-        if (task.id === taskId) {
-          tasks.splice(tasks.indexOf(task), 1);
-        }
-    });    
+    let tasks = readTasksFromStorage();
+    
+    tasks = tasks.filter(task => task.id !== taskId);
+    
     localStorage.setItem('tasks', JSON.stringify(tasks));
-    renderTaskList();
+    tasks = readTasksFromStorage();
+    renderTaskList(tasks);
 }
 
 // Drop function, changes task status when dropped in a column
@@ -165,20 +162,47 @@ function handleDrop(event, ui) {
     const taskId = ui.draggable[0].dataset.taskId
     const newStatus = event.target.id;
     
-    console.log('Task ID:', taskId);
-    console.log('New Status:', newStatus);
     for (let task of tasks) {
-        if (task.id === taskId) {
-            task.status = newStatus;
-        }
+    if (task.id === taskId) {
+        // Make a shallow copy of the task object
+        const updatedTask = { ...task };
+        updatedTask.status = newStatus;
+
+        // Find the index of the task in the tasks array
+        const index = tasks.findIndex(t => t.id === taskId);
+
+        // Replace the original task with the updated task in the tasks array
+        tasks[index] = updatedTask;
     }
+}
     localStorage.setItem('tasks', JSON.stringify(tasks));
+    
+    // TEMPORARY FIX
+    // location.reload();
+    
+    
+    // tasks = readTasksFromStorage();
     // renderTaskList(tasks);
+    // ui.draggable.appendTo($(this).find('.card-body'));
+
+    // IGNORE: Ensure draggable behavior is maintained
+    /* ui.draggable.draggable({
+        revert: 'invalid',
+        opacity: 0.9,
+        zIndex: 100,
+        helper: function (e) {
+            const original = $(e.target).hasClass('ui-draggable') ? $(e.target) : $(e.target).closest('.ui-draggable');
+            return original.clone().css({
+                width: original.outerWidth(),
+            });
+        },
+    }); */
 }
 
-// When the page loads, render the task list, add event listeners, make lanes droppable, and make the due date field a date picker
+// When the page loads, renders the task list, adds event listeners, makes lanes droppable, and makes the due date field a date picker
 $(document).ready(function () {
-    renderTaskList();
+    const tasks = readTasksFromStorage();
+    renderTaskList(tasks);
     
     $('#task-duedate').datepicker({
         changeMonth: true,
@@ -191,7 +215,11 @@ $(document).ready(function () {
         drop: handleDrop,
     });
 
+    // Submits modal, adds new task, creates new card, renders cards. Using click event instead of submit event because submit doesn't seem to be working with this
     $('#submitTask').on('click', handleAddTask);
 
+    // Event delegation so the delete buttons work
     $('#task-display').on('click', '.btn-delete-task', handleDeleteTask);
+
+
 });
