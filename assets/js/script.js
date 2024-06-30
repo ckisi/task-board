@@ -48,6 +48,7 @@ function createTaskCard(task) {
         taskCard.addClass('bg-warning text-white');
     } else if (now.isAfter(dayjsDueDate)) {
         taskCard.addClass('bg-danger text-white');
+        cardDeleteBtn.addClass('border-light');
     }
 
     // Puts all the elements into one card
@@ -146,7 +147,15 @@ function handleAddTask(event){
 
 // Deletes task cards
 function handleDeleteTask(event){
-    const projectId = $(this).attr('data-project-id');
+    const taskId = $(this).attr('data-task-id');
+    const tasks = readTasksFromStorage();
+    tasks.forEach((task) => {
+        if (task.id === taskId) {
+          tasks.splice(tasks.indexOf(task), 1);
+        }
+    });    
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    renderTaskList();
 }
 
 // Drop function, changes task status when dropped in a column
@@ -183,4 +192,6 @@ $(document).ready(function () {
     });
 
     $('#submitTask').on('click', handleAddTask);
+
+    $('#task-display').on('click', '.btn-delete-task', handleDeleteTask);
 });
