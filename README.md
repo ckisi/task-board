@@ -8,15 +8,20 @@ Clicking the add task button will allow you to add a task. Depending on when the
 
 ## Technologies
 HTML
-CSS:
+
+CSS
 - Bootstrap
-JavaScript:
+
+JavaScript
 - Jquery
 - Jquery UI
 - DayJS
 
 ## Links
-
+https://ckisi.github.io/task-board/
+https://github.com/ckisi/task-board
 ## Screenshots
 
 ## Credits
+Xpert Learning Assistant
+-For help with the delete tasks function and help with draggable functionality.
