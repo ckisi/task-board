@@ -59,6 +59,11 @@ function createTaskCard(task) {
         cardDeleteBtn.addClass('border-light');
     }
 
+    // Changes the card to white if it's in the done column
+    if (task.status === 'done') {
+        taskCard.removeClass('bg-danger bg-warning text-white');
+    }
+
     // Puts all the elements into one card
     cardBody.append(cardDescription, cardDueDate, cardDeleteBtn);
     taskCard.append(cardHeader, cardBody);
@@ -67,7 +72,6 @@ function createTaskCard(task) {
 
 // Renders tasks by clearing the columns and loops through all the tasks and places them in their respective column
 function renderTaskList(tasks) {
-    // tasks = readTasksFromStorage();
     
     // Empty out columns
     const todo = $('#todo-cards');
@@ -77,6 +81,7 @@ function renderTaskList(tasks) {
     const done = $('#done-cards');
     done.empty();
     // Loop through tasks and render the task cards based on their status
+        
     if (Array.isArray(tasks)) {
     for (let task of tasks) {
         if (task.status === 'to-do') {
@@ -89,7 +94,7 @@ function renderTaskList(tasks) {
     }
     } else {
         console.error('tasks is not an array')
-    }  
+    }
 }
 
 // Adds a new task
@@ -128,75 +133,66 @@ function handleAddTask(event){
     taskDateInput.val('');
     taskDescInput.val('');
 
-    const todo = $('#todo-cards');
+    // Empty out columns
+    const todo = $('#todoCards');
     todo.empty();
-    const inProgress = $('#in-progress-cards');
+    const inProgress = $('#inProgressCards');
     inProgress.empty();
-    const done = $('#done-cards');
+    const done = $('#doneCards');
     done.empty();
     tasks = readTasksFromStorage();
     // Renders the cards from task list
     renderTaskList(tasks);
-    // TEMPORARY FIX
-    // location.reload();
-}
+    
+    // The only way to fix UI bug
+    location.reload();
+    }
 }
 
 // Deletes task cards
 function handleDeleteTask(event){
     event.preventDefault();
     const taskId = $(this).attr('data-task-id');
+        
+    // Remove the card
+    $(this).closest('.card').remove();
+        
+    // Filter out the remaining tasks
     let tasks = readTasksFromStorage();
-    
     tasks = tasks.filter(task => task.id !== taskId);
-    
+        
     localStorage.setItem('tasks', JSON.stringify(tasks));
-    tasks = readTasksFromStorage();
-    renderTaskList(tasks);
 }
 
 // Drop function, changes task status when dropped in a column
 function handleDrop(event, ui) {
     $(this).append(ui.draggable);
+    
     const tasks = readTasksFromStorage();
-    const taskId = ui.draggable[0].dataset.taskId
-    const newStatus = event.target.id;
+    const taskId = ui.draggable[0].dataset.taskId;
+    const targetCard = event.target;
     
+    // Get the element with the ID contained in event.target.id
+    const targetId = event.target.id;
+    const targetElement = document.getElementById(targetId);
+    
+    // Get the parent element of the target element
+    const parentElement = targetElement.parentNode;
+    
+    // Get the status ID from the parent element
+    const newStatus = parentElement.id;
+
+    // Update the status of the task in the tasks array
     for (let task of tasks) {
-    if (task.id === taskId) {
-        // Make a shallow copy of the task object
-        const updatedTask = { ...task };
-        updatedTask.status = newStatus;
-
-        // Find the index of the task in the tasks array
-        const index = tasks.findIndex(t => t.id === taskId);
-
-        // Replace the original task with the updated task in the tasks array
-        tasks[index] = updatedTask;
+        if (task.id === taskId) {
+            task.status = newStatus;
+            break;
+        }
     }
-}
+    
+    // Save the updated tasks back to localStorage
     localStorage.setItem('tasks', JSON.stringify(tasks));
-    
-    // TEMPORARY FIX
-    // location.reload();
-    
-    
-    // tasks = readTasksFromStorage();
-    // renderTaskList(tasks);
-    // ui.draggable.appendTo($(this).find('.card-body'));
-
-    // IGNORE: Ensure draggable behavior is maintained
-    /* ui.draggable.draggable({
-        revert: 'invalid',
-        opacity: 0.9,
-        zIndex: 100,
-        helper: function (e) {
-            const original = $(e.target).hasClass('ui-draggable') ? $(e.target) : $(e.target).closest('.ui-draggable');
-            return original.clone().css({
-                width: original.outerWidth(),
-            });
-        },
-    }); */
+    location.reload();
 }
 
 // When the page loads, renders the task list, adds event listeners, makes lanes droppable, and makes the due date field a date picker
@@ -220,6 +216,4 @@ $(document).ready(function () {
 
     // Event delegation so the delete buttons work
     $('#task-display').on('click', '.btn-delete-task', handleDeleteTask);
-
-
 });
