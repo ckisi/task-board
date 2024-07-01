@@ -21,8 +21,8 @@ JavaScript
 https://ckisi.github.io/task-board/
 https://github.com/ckisi/task-board
 ## Screenshots
-!(./assets/taskboardss1.png)
-!(./assets/taskboardss2.png)
+![](./assets/taskboardss1.png)
+![](./assets/taskboardss2.png)
 
 ## Credits
 Xpert Learning Assistant
