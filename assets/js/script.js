@@ -73,15 +73,16 @@ function createTaskCard(task) {
 // Renders tasks by clearing the columns and loops through all the tasks and places them in their respective column
 function renderTaskList(tasks) {
     
-    // Empty out columns
     const todo = $('#todo-cards');
-    todo.empty();
+    
     const inProgress = $('#in-progress-cards');
-    inProgress.empty();
+    
     const done = $('#done-cards');
-    done.empty();
+    
+    // Clear all cards
+    $('.draggable').remove();
+    
     // Loop through tasks and render the task cards based on their status
-        
     if (Array.isArray(tasks)) {
     for (let task of tasks) {
         if (task.status === 'to-do') {
@@ -126,26 +127,26 @@ function handleAddTask(event){
     console.log('tasks after adding:', tasks);
     // Sets the array to local storage
     localStorage.setItem('tasks', JSON.stringify(tasks));
+
+     // Clear input fields
+     taskTitleInput.val('');
+     taskDateInput.val('');
+     taskDescInput.val('');
+
     // Hides the modal
     $('#formModal').modal('hide');    
-    // Clear input fields
-    taskTitleInput.val('');
-    taskDateInput.val('');
-    taskDescInput.val('');
+   
 
     // Empty out columns
-    const todo = $('#todoCards');
-    todo.empty();
-    const inProgress = $('#inProgressCards');
-    inProgress.empty();
-    const done = $('#doneCards');
-    done.empty();
+    // const todo = $('#todoCards');
+    // todo.empty();
+    // const inProgress = $('#inProgressCards');
+    // inProgress.empty();
+    // const done = $('#doneCards');
+    // done.empty();
     tasks = readTasksFromStorage();
     // Renders the cards from task list
     renderTaskList(tasks);
-    
-    // The only way to fix UI bug
-    location.reload();
     }
 }
 
@@ -192,7 +193,6 @@ function handleDrop(event, ui) {
     
     // Save the updated tasks back to localStorage
     localStorage.setItem('tasks', JSON.stringify(tasks));
-    location.reload();
 }
 
 // When the page loads, renders the task list, adds event listeners, makes lanes droppable, and makes the due date field a date picker
