@@ -136,14 +136,6 @@ function handleAddTask(event){
     // Hides the modal
     $('#formModal').modal('hide');    
    
-
-    // Empty out columns
-    // const todo = $('#todoCards');
-    // todo.empty();
-    // const inProgress = $('#inProgressCards');
-    // inProgress.empty();
-    // const done = $('#doneCards');
-    // done.empty();
     tasks = readTasksFromStorage();
     // Renders the cards from task list
     renderTaskList(tasks);
